@@ -6,6 +6,9 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Kyle Schrock",
   description: "Official site of Kyle Schrock",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
