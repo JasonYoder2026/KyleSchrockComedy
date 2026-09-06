@@ -56,10 +56,10 @@ function formatEventTime(time: string) {
 
 function EventCard({ event }: { event: Event }) {
   const CardContent = (
-    <div className="bg-amber-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
-      <div className="relative w-full aspect-[3/4]">
+    <div className="overflow-hidden rounded-[24px] border border-black/10 bg-white shadow-[0_15px_40px_rgba(0,0,0,0.08)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(0,0,0,0.12)]">
+      <div className="relative aspect-[3/4] w-full overflow-hidden">
         <Image
-          src={event.image_link || '/posters/placeholder.png'}
+          src={event.image_link || "/posters/placeholder.png"}
           alt={event.title}
           fill
           className="object-cover"
@@ -67,50 +67,74 @@ function EventCard({ event }: { event: Event }) {
         />
       </div>
 
-      <div className="p-4 text-center">
-        <h3 className="text-xl font-semibold text-black underline decoration-neutral-400 underline-offset-2 mb-2 inline-flex items-center justify-center gap-1">
+      <div className="p-5 text-center">
+        <h3 className="mb-3 inline-flex items-center justify-center gap-2 text-xl font-semibold text-black underline decoration-neutral-400 underline-offset-2">
           {event.title}
-          {event.venue_link && <FaExternalLinkAlt className="inline-block w-4 h-4 shrink-0 text-neutral-500" aria-hidden />}
+          {event.venue_link && (
+            <FaExternalLinkAlt className="h-4 w-4 shrink-0 text-neutral-500" aria-hidden />
+          )}
         </h3>
-        <p className="text-gray-700">
-          {formatEventDate(event.date)}
-        </p>
-        <p className="text-gray-700">
-          {formatEventTime(event.time)}
-        </p>
+        <p className="text-base text-neutral-700">{formatEventDate(event.date)}</p>
+        <p className="text-base text-neutral-700">{formatEventTime(event.time)}</p>
       </div>
     </div>
-  )
+  );
+
   return event.venue_link ? (
     <Link href={event.venue_link} target="_blank" rel="noopener noreferrer">
       {CardContent}
     </Link>
   ) : (
     CardContent
-  )
+  );
 }
-
 
 export default async function EventsPage() {
   const events = await getEvents();
 
   return (
-    <section className="max-w-6xl mx-auto py-12 px-4">
-      <h1 className="text-4xl font-bold mb-10 text-black text-center">
-        Upcoming Gigs
-      </h1>
+    <>
+      <section className="bg-[#f5f1e8] px-6 py-16 md:px-10 md:py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 text-center">
+            <p className="mb-4 text-sm font-bold uppercase tracking-[0.25em] text-neutral-600">
+              Upcoming shows
+            </p>
+            <h1 className="text-5xl font-black tracking-tight text-black md:text-7xl">
+              Find the next laugh.
+            </h1>
+            <p className="mx-auto mt-5 max-w-2xl text-lg text-neutral-700">
+              Catch Kyle on stage for a night filled with honest stories, sharp timing, and a room full of people who were already laughing before the opener finished.
+            </p>
+          </div>
 
-      {events.length === 0 ? (
-        <p className="text-lg text-black text-center">
-          Kyle has no upcoming shows right now, check back later.
-        </p>
-      ) : (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:grid-cols-4">
-          {events.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
+          {events.length === 0 ? (
+            <p className="rounded-[24px] border border-neutral-300 bg-white p-10 text-center text-lg text-neutral-700 shadow-[0_15px_40px_rgba(0,0,0,0.04)]">
+              Kyle has no upcoming shows right now, check back later.
+            </p>
+          ) : (
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {events.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          )}
         </div>
-      )}
-    </section>
+      </section>
+
+      <section className="border-y border-black bg-[#dfe490] px-6 py-5 md:px-10">
+        <div className="mx-auto flex max-w-6xl flex-col justify-between gap-3 text-center sm:flex-row sm:items-center sm:text-left">
+          <p className="text-lg font-bold text-black">
+            Want Kyle at your next event? Let&apos;s make it memorable.
+          </p>
+          <Link
+            href="/contact"
+            className="shrink-0 font-bold text-black underline underline-offset-4 hover:no-underline"
+          >
+            Book him <span aria-hidden>↗</span>
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }
