@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { FacebookIcon, FacebookShareButton } from "next-share";
 import { FaInstagram } from "react-icons/fa";
+import { createClient } from "@supabase/supabase-js";
 
 export default function ContactPage() {
   const [status, setStatus] = useState("");
@@ -18,21 +19,30 @@ export default function ContactPage() {
     };
 
     try {
-      const response = await fetch(process.env.NEXT_CONTACT_API!, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+      if (!supabaseUrl || !supabaseKey) {
+        throw new Error(
+          "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+        );
+      }
+
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      const { error } = await supabase.functions.invoke("send-contact-email", {
+        body: data,
       });
-      console.log(response);
-      if (response.ok) {
+
+      if (!error) {
         setStatus("Message sent! Thank you.");
         form.reset();
       } else {
+        console.error("Unable to send contact email:", error.message);
         setStatus("Something went wrong. Please try again.");
       }
     } catch (err) {
       setStatus("Error sending message.");
-      console.log(err);
+      console.error("Error sending contact email:", err);
     }
   }
 
