@@ -30,7 +30,7 @@ export default function ContactPage() {
 
       const supabase = createClient(supabaseUrl, supabaseKey);
       const { error } = await supabase.functions.invoke("send-contact-email", {
-        body: data,
+        body: data, 
       });
 
       if (!error) {
